@@ -13,6 +13,8 @@ let point = 0;
 const g = c.getContext('2d');
 let d = 'up';
 let dx = 10, dy = 10;
+let food = { x: getRandomArbitrary(1, 640), y: getRandomArbitrary(1, 640) };
+let s = [{ x: 320, y: 320 }];
 
 const MOVE = { 
     'up': (pos) => { return { x: pos.x, y: pos.y - dy } }, 
@@ -21,8 +23,6 @@ const MOVE = {
     'right': (pos) => { return { x: pos.x + dx, y: pos.y } }
 }
 
-let food = { x: getRandomArbitrary(1, 640), y: getRandomArbitrary(1, 640) };
-let s = [{ x: 320, y: 320 }];
 
 const generateFood = () => {
     const { x, y } = drawFood();
@@ -135,6 +135,7 @@ window.addEventListener('keydown', (e) => {
     const { key } = e;
     switch(key) {
         case ' ':
+            e.preventDefault();
             if(!f) {
                 f = true;
                 startGame();
