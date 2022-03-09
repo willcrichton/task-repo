@@ -40,8 +40,7 @@ body{
 }
 
 #showcase{
-    background-image:url("Lockscreen.jpg");
-    background-position:center right;
+    display: flex;
     min-height:300px;
     margin-bottom:30px;
     text-align: center;
@@ -55,10 +54,11 @@ body{
 }
 
 #main{
-    float:left;
-    width:70%;
-    padding:0 30px;
+    width: 100%;
+    display: flex;
     box-sizing: border-box;
+    justify-content: center;
+    margin-bottom: 5em;
 }
 
 #sidebar{
