@@ -1,7 +1,6 @@
 let play = false;
 const W = 640, H = 640;
 const t = document.getElementById('t');
-console.log('c', t)
 t.height = W;
 t.width = H;
 const gt = t.getContext('2d');
@@ -26,14 +25,17 @@ const ds = {
     'down': [0, 1]
 }
 var fallingShape; 
-var fallingShapeRow;
-var fallingShapeCol;
+var fallingShapeRow = 1;
+var fallingShapeCol = 7;
 let falling = false;
+let stime, previousTimestamp;
 let col = 0;
 var keyDown = false;
-var fastDown = false;
 let grid = new Grid();
 let cd = 'down';
+const nr = 20;
+const nc = 14;
+let st = 0
 
 const draw = () => {
     gt.clearRect(0, 0, W, H);
@@ -44,60 +46,163 @@ const draw = () => {
         gt.fillText('Play Tetris - press Enter to Start', 320, 320);
     }
     else {
+        fallingShape = getRandomShape();
+        col = getRandomColor();
+        falling = true;
+        clear();
         animate();
     }
 }
 
-const getRandomShape = () => {
+const displayGameOver = () => {
+    play = false;
+    gt.clearRect(0, 0, W, H);
+    gt.font = '30px Arial';
+    gt.fillStyle = 'purple';
+    gt.textAlign = 'center';
+    gt.fillText(`You got ${st} rows`, 320, 320);
+    gt.fillText(`Press Enter to play again.`, 320, 360);  
+}
+
+const getRandomColor = () => {
     const k = Object.keys(enumC)
     return enumC[k[Math.floor(Math.random() * k.length)]];
 }
 
-const getRandomColor = () => {
+const getRandomShape = () => {
     const k = Object.keys(sh)
     return sh[k[Math.floor(Math.random() * k.length)]];
 }
 
-const moveShape = () => {
-    fallingShape = getRandomShape();
-    col = getRandomColor();
-    while(falling) {
-        fallingShape.forEach(f => new Square(fallingShapeCol + f[0], fallingShapeRow + f[1], 30).draw(gt, col));
-        if(checkBlockCollision()) {
-            fallingShape.forEach(f => new Square(fallingShapeCol + cd[0], fallingShapeRow + cd[1], 30).draw(gt, col))
-            fallingShapeCol += cd[0];
-            fallingShapeRow += cd[1];
+function removeLines() {
+    var count = 0;
+    for (var r = 0; r < nr - 1; r++) {
+        for (var c = 1; c < nc - 1; c++) {
+            if (grid.squares[r][c] === -1)
+                break;
+            if (c === nc - 2) {
+                count++;
+                removeLine(r);
+            }
         }
+    }
+    return count;
+}
+
+function removeLine(line) {
+    for (var c = 0; c < nc; c++)
+        grid.squares[line][c] = -1;
+
+    for (var c = 0; c < nc; c++) {
+        for (var r = line; r > 0; r--)
+            grid.squares[r][c] = grid.squares[r - 1][c];
     }
 }
 
-const checkBlockCollision = () => {
+const shapeLanded = () => {
+    fallingShape.forEach(pos => {
+        grid.squares[fallingShapeRow + pos[1]][fallingShapeCol + pos[0]] = col;
+    });
+    st = removeLines();
+    if(fallingShapeRow < 2) {
+        displayGameOver();
+    }
+    // grid.draw(gt)
+}
+
+const moveShape = () => {
+    if(falling) {
+        fallingShape.forEach(f => new Square(30 * (fallingShapeCol + f[0]), 30 * (fallingShapeRow + f[1]), 30).draw(gt, col));
+        if(checkNoBlockCollision()) {
+            fallingShapeCol += ds[cd][0];
+            fallingShapeRow += ds[cd][1];
+        }
+        else {
+            shapeLanded();
+            fallingShape = getRandomShape();
+            col = getRandomColor();
+            fallingShapeRow = 1;
+            fallingShapeCol = 5; 
+        }
+
+    }
+}
+
+const checkIfRotate = () => {
+    var pos = new Array(4);
+    for (var i = 0; i < pos.length; i++) {
+        pos[i] = fallingShape[i].slice();
+    }
+    pos.forEach(t => {
+        let temp = t[0];
+        t[0] = t[1];
+        t[1] = temp;
+    });
+
+    return pos.every((r) => {
+        let nc = fallingShapeCol + r[0];
+        let nr = fallingShapeRow + r[1];
+        return grid.squares[nr][nc] === -1;
+    })
+}
+
+const checkNoBlockCollision = () => {
     return fallingShape.every(s => {
-        let c = fallingShapeCol + ds[cd][0] + s[0]
-        let r = fallingShapeRow + ds[cd][1] + s[1]
-        return grid[r][c] !== -1;
+        let c = fallingShapeCol + ds[cd][0] + s[0];
+        let r = fallingShapeRow + ds[cd][1] + s[1];
+        return grid.squares[r][c] === -1;
     });
 }
 
 const clear = () => {
     gt.fillStyle = 'white';
     gt.clearRect(0, 0, 640, 640);
-    new Square(0, 0, 640, 640);
+    gt.rect(0, 0, 640, 640);
+    gt.closePath();
+    gt.fill();
 }
 
-const animate = () => {
-    let req = window.requestAnimationFrame(animate);
+const refresh = () => {
+    clear();
+    // cd = 'down';
+    grid.draw(gt);
+    moveShape();
+}
+
+function animate(timestamp) {
+    if(previousTimestamp === undefined) {
+        previousTimestamp = 0;
+    }
+    let elapsed = timestamp - previousTimestamp;
+    window.requestAnimationFrame(animate);
     if(play) {
-        moveShape();
+        if(elapsed >= 600) {
+            clear();
+            cd = 'down';
+            grid.draw(gt);
+            moveShape();
+            previousTimestamp = timestamp;
+            elapsed = 0;
+        }
     }
 }
 
 const init = () => {
     clear();
-    grid = new Grid();
+    grid = new Grid(nr, nc);
     draw();
 }
 
+const rotate = () => {
+    if(sh['sq'] === fallingShape) {
+        return;
+    }
+    fallingShape.forEach(r => {
+        let t = r[0];
+        r[0] = r[1];
+        r[1] = -t;
+    });
+}
 
 const sg = () => {
     init();
@@ -105,7 +210,6 @@ const sg = () => {
 
 t.addEventListener('keydown', (e) => {
     const { key } = e;
-    console.log('e', e);
     switch(key) {
         case 'Enter':
             if(!play) {
@@ -115,19 +219,24 @@ t.addEventListener('keydown', (e) => {
             break;
         case 's':
         case 'ArrowDown':
-            cd = ds['down'];
+            e.preventDefault();
+            cd = 'down';
+            if(checkNoBlockCollision()) refresh();
             break;
         case 'w':
         case 'ArrowUp':
-            rotate();
+            e.preventDefault();
+            if(checkIfRotate()) rotate();
             break;
         case 'a':
         case 'ArrowLeft':
-            cd = ds['left'];
+            cd = 'left';
+            if(checkNoBlockCollision()) refresh();
             break;
         case 'd':
         case 'ArrowRight':
-            cd = ds['right']
+            cd = 'right';
+            if(checkNoBlockCollision()) refresh();
             break;
         }
 });
