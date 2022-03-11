@@ -24,11 +24,11 @@ const ds = {
     'right': [1, 0],
     'down': [0, 1]
 }
-var fallingShape; 
-var fallingShapeRow = 1;
-var fallingShapeCol = 7;
+var fs; 
+var fsr = 1;
+var fsc = 7;
 let falling = false;
-let stime, previousTimestamp;
+let stime, pt;
 let col = 0;
 var keyDown = false;
 let grid = new Grid();
@@ -39,14 +39,19 @@ let st = 0
 
 const draw = () => {
     gt.clearRect(0, 0, W, H);
+    gt.fillStyle = 'white';
+    gt.clearRect(0, 0, 640, 640);
+    gt.rect(0, 0, 640, 640);
+    gt.closePath();
+    gt.fill();
     if(!play) {
         gt.font = '30px Arial';
-        gt.fillStyle = 'purple';
+        gt.fillStyle = 'black';
         gt.textAlign = 'center';
         gt.fillText('Play Tetris - press Enter to Start', 320, 320);
     }
     else {
-        fallingShape = getRandomShape();
+        fs = getRandomShape();
         col = getRandomColor();
         falling = true;
         clear();
@@ -57,8 +62,13 @@ const draw = () => {
 const displayGameOver = () => {
     play = false;
     gt.clearRect(0, 0, W, H);
+    gt.fillStyle = 'white';
+    gt.clearRect(0, 0, 640, 640);
+    gt.rect(0, 0, 640, 640);
+    gt.closePath();
+    gt.fill();
     gt.font = '30px Arial';
-    gt.fillStyle = 'purple';
+    gt.fillStyle = 'black';
     gt.textAlign = 'center';
     gt.fillText(`You got ${st} rows`, 320, 320);
     gt.fillText(`Press Enter to play again.`, 320, 360);  
@@ -89,49 +99,40 @@ function removeLines() {
     return count;
 }
 
-function removeLine(line) {
-    for (var c = 0; c < nc; c++)
-        grid.squares[line][c] = -1;
 
-    for (var c = 0; c < nc; c++) {
-        for (var r = line; r > 0; r--)
-            grid.squares[r][c] = grid.squares[r - 1][c];
-    }
-}
 
 const shapeLanded = () => {
-    fallingShape.forEach(pos => {
-        grid.squares[fallingShapeRow + pos[1]][fallingShapeCol + pos[0]] = col;
+    fs.forEach(pos => {
+        grid.squares[fsr + pos[1]][fsc + pos[0]] = col;
     });
+    console.log('fsr', fsr);
     st = removeLines();
-    if(fallingShapeRow < 2) {
+    if(fsr < 2) {
         displayGameOver();
     }
-    // grid.draw(gt)
 }
 
 const moveShape = () => {
     if(falling) {
-        fallingShape.forEach(f => new Square(30 * (fallingShapeCol + f[0]), 30 * (fallingShapeRow + f[1]), 30).draw(gt, col));
+        fs.forEach(f => new Square(30 * (fsc + f[0]), 30 * (fsr + f[1]), 30).draw(gt, col));
         if(checkNoBlockCollision()) {
-            fallingShapeCol += ds[cd][0];
-            fallingShapeRow += ds[cd][1];
+            fsc += ds[cd][0];
+            fsr += ds[cd][1];
         }
         else {
             shapeLanded();
-            fallingShape = getRandomShape();
+            fs = getRandomShape();
             col = getRandomColor();
-            fallingShapeRow = 1;
-            fallingShapeCol = 5; 
+            fsr = 1;
+            fsc = 5; 
         }
-
     }
 }
 
 const checkIfRotate = () => {
     var pos = new Array(4);
     for (var i = 0; i < pos.length; i++) {
-        pos[i] = fallingShape[i].slice();
+        pos[i] = fs[i].slice();
     }
     pos.forEach(t => {
         let temp = t[0];
@@ -140,16 +141,16 @@ const checkIfRotate = () => {
     });
 
     return pos.every((r) => {
-        let nc = fallingShapeCol + r[0];
-        let nr = fallingShapeRow + r[1];
+        let nc = fsc + r[0];
+        let nr = fsr + r[1];
         return grid.squares[nr][nc] === -1;
     })
 }
 
 const checkNoBlockCollision = () => {
-    return fallingShape.every(s => {
-        let c = fallingShapeCol + ds[cd][0] + s[0];
-        let r = fallingShapeRow + ds[cd][1] + s[1];
+    return fs.every(s => {
+        let c = fsc + ds[cd][0] + s[0];
+        let r = fsr + ds[cd][1] + s[1];
         return grid.squares[r][c] === -1;
     });
 }
@@ -164,16 +165,15 @@ const clear = () => {
 
 const refresh = () => {
     clear();
-    // cd = 'down';
     grid.draw(gt);
     moveShape();
 }
 
-function animate(timestamp) {
-    if(previousTimestamp === undefined) {
-        previousTimestamp = 0;
+function animate(t) {
+    if(pt === undefined) {
+        pt = 0;
     }
-    let elapsed = timestamp - previousTimestamp;
+    let elapsed = t - pt;
     window.requestAnimationFrame(animate);
     if(play) {
         if(elapsed >= 600) {
@@ -181,7 +181,7 @@ function animate(timestamp) {
             cd = 'down';
             grid.draw(gt);
             moveShape();
-            previousTimestamp = timestamp;
+            pt = t;
             elapsed = 0;
         }
     }
@@ -194,13 +194,13 @@ const init = () => {
 }
 
 const rotate = () => {
-    if(sh['sq'] === fallingShape) {
+    if(sh['sq'] === fs) {
         return;
     }
-    fallingShape.forEach(r => {
+    fs.forEach(r => {
         let t = r[0];
-        r[0] = r[1];
-        r[1] = -t;
+        r[0] += r[1];
+        r[1] += -t;
     });
 }
 
@@ -208,12 +208,42 @@ const sg = () => {
     init();
 }
 
-t.addEventListener('keydown', (e) => {
+function removeLine(line) {
+    for (var c = 0; c < nc; c++)
+        grid.squares[line][c] = -1;
+
+    for (var c = 0; c < nc; c++) {
+        for (var r = line; r > 0; r--)
+            grid.squares[r][c] = grid.squares[r - 1][c];
+    }
+}
+
+function initCanvas() {
+    // create our canvas and context
+    canvas = document.getElementById('game-canvas');
+    ctx = canvas.getContext('2d');
+    
+    // turn off image smoothing
+    setImageSmoothing(false);
+    
+    // create our main sprite sheet img
+    spriteSheetImg = new Image();
+    spriteSheetImg.src = SPRITE_SHEET_SRC;  
+    preDrawImages();
+  
+    // add event listeners and initially resize
+    window.addEventListener('resize', resize);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+  }
+
+window.addEventListener('keydown', (e) => {
     const { key } = e;
     switch(key) {
         case 'Enter':
             if(!play) {
                 play = true;
+                gl.incrementTetrisTimesPlayed();
                 sg();
             }
             break;

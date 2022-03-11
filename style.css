@@ -8,14 +8,22 @@ body{
 }
 
 .container{
-    width:80%;
-    margin:auto;
-    overflow:hidden;
+    margin: auto;
+    overflow: hidden;
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: space-between;
+}
+
+body {
+    /* background-image: url("2365.jpg"); */
+    /* background-repeat: tile; */
 }
 
 #main-header{
-    background-color:coral;
-    color:#fff;
+    background-color: rgb(0 123 255 / 25%);
+    color: #fff;
+    padding-left: 5em;
 }
 
 #navbar{
@@ -46,19 +54,21 @@ body{
     text-align: center;
 }
 
-#showcase h1{
-    color:#fff;
+#showcase       h1{
+    color:rgb(0 123 255 / 85%);
     font-size:50px;
     line-height: 1.6em;
     padding-top:30px;
 }
 
-#main{
+.main{
     width: 100%;
-    display: flex;
+    /* display: flex; */
     box-sizing: border-box;
     justify-content: center;
     margin-bottom: 5em;
+    flex-direction: column;
+    text-align: center;
 }
 
 #sidebar{

@@ -1,43 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Website</title>
+    <title>Game Paradise</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
     <header id="main-header">
         <div class="container">
-            <h1>My Website</h1>
+            <h1>Game Paradise</h1>
         </div>
     </header>
 
-    <nav id="navbar">
-        <div class="container">
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <section id="showcase">
         <div class="container">
-            <h1>Play my Games!
-            </h1>
+            <h1>Arcade Classics</h1>
         </div>
     </section>
 
     <div class="container">
-        <section id="main">
+        <section class="main">
+            <h2>
+                Snake
+            </h2>
             <canvas id="c" style="border: 2px solid black;">
         </section>
-        <section>
+        <section class="main">
+            <h2>
+                Tetris
+            </h2>
             <canvas tabindex="1" id="t" style="border: 2px solid black;"></canvas>
         </section>
     </div>
-
+    <script src="gameloader.js"></script>
     <script src="game-2-LOCKED.js"></script>
     <script src="game-2.js"></script>
     <script src="game-1-LOCKED.js"></script>

@@ -31,9 +31,11 @@ class Grid {
             temp[r] = new Array(nCols);
             fill(temp[r], -1);
             for (var c = 0; c < nCols; c++) {
+                
+
                 if (c === 0 || c === nCols - 1 || r === nRows - 1)
                     temp[r][c] = -2;
-            }
+             }
         }
         this.squares = temp;
     }
