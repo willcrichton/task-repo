@@ -1,0 +1,11 @@
+1: Users complain that the snake game is too fast - fix it such that the snake moves slower.
+- Hint: there's some code in the Tetris game that may help with this.
+
+2: Users want to see how many times they've played each game and what their high score is.
+Implement this using the gameloader.js file.
+
+3: Users complain that, when they start one game, it starts the other game, as well. 
+Fix the code such that each game can be played independent of one another.
+
+4: Users complain that they don't like the black blocks in Tetris. Fix the implementation such
+that the blocks are purple, yellow, green, and RED instead of black.

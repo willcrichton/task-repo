@@ -1,0 +1,20 @@
+Snake:
+You, the player, control a snake that eats food. 
+Each food piece appears at a random coordinate in the game grid.
+Whenever the snake eats a piece of food, the snake grows, the player earns 50 points, and a new piece of food spawns in the grid.
+The game is lost when the snake runs into the edge of the grid OR if the snake runs into itself.
+
+Tetris:
+You, the player, drop shapes comprised of 4 squares in various formations in a grid. These formations include:
+- an L shape (3 squares stacked on top of one another with one square to the right of the bottom-most square), 
+- a J shape (3 squares stacked on top of one another with one square to the left of the bottom-most square),
+- a Z shape (2 squares on top and two squares on bottom, with the bottom squares translated to the right)
+- an S shape (2 squares on top and two squares on bottom, with the bottom squares translated to the left)
+- an I shape (4 squares stacked vertically)
+- a T shape (3 squares on the top row, and 1 square on bottom in the middle)
+- a square shape (4 squares that make a 2 by 2 large square)
+Each piece falls row by row.
+The shape can be rotated.
+When a whole row of the grid is filled up with shapes, that row disappears and the player earns a point.
+- Multiple rows can be removed when a shape hits the bottom of the grid and completes multiple rows.
+If the shapes reach the top of the grid, the player loses. 
