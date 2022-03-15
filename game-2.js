@@ -199,8 +199,8 @@ const rotate = () => {
     }
     fs.forEach(r => {
         let t = r[0];
-        r[0] += r[1];
-        r[1] += -t;
+        r[0] = r[1];
+        r[1] = -t;
     });
 }
 
