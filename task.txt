@@ -4,8 +4,15 @@ Fix the code such that each game can be played independent of one another.
 2: Users complain that they don't like the black blocks in Tetris. Fix the implementation such
 that the blocks are purple, yellow, green, and RED instead of black.
 
-3: Users want to see how many times they've played each game and what their high score is.
-Implement this using the gameloader.js file.
+3: Snake currently is buggy in the way it renders the game - fix the code
+such that the game renders normally 
+ - Note that this includes rendering food only when the snake eats a piece of food.
+- Hint: there's some code in the Tetris game that may help with this.
 
 4: Users complain that the snake game is too fast - fix it such that the snake moves slower.
 - Hint: there's some code in the Tetris game that may help with this.
+
+5: Users want to see how many times they've played each game and what their high score is.
+Implement this using the gameloader.js file.
+
+Note that, if you get too stuck on one task, feel free to try a different task!

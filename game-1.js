@@ -1,9 +1,4 @@
-// qualities for this code to include:
-// - confusing/hard to parse variable names
-// - separate code fragments
-// - ambiguous error codes that they cannot easily figure out
-// - uneditable files that they need to understand
-// - unhelpful or nonexistant comments
+
 let f = false
 let start;
 // TODO: finish timing code???
@@ -13,7 +8,7 @@ c.height = 640;
 let point = 0;
 const g = c.getContext('2d');
 let d = 'up';
-let dx = 20, dy = 20;
+let dx = 10, dy = 10;
 let food = { x: getRandomArbitrary(1, 640), y: getRandomArbitrary(1, 640) };
 let s = [{ x: 320, y: 320 }];
 
@@ -51,7 +46,7 @@ const moveSnake = (timestamp) => {
     if(!start) {
         start = timestamp;
     }
-    clearScreen();
+
     const oldS = s;
     s = s.map((p, i) => {
         return i === 0 ? MOVE[d](p) : oldS[i - 1];
@@ -89,17 +84,8 @@ const moveSnake = (timestamp) => {
 
 // TODO : implement Scoreboard? 
 
-const clearScreen = () => {
-    g.fillStyle = 'white';
-    g.clearRect(0, 0, 640, 640);
-    new Rectangle(0, 0, 640, 640);
-    g.rect(0, 0, 640, 640);
-    g.closePath();
-    g.fill();
-}
 
 const intro = () => {
-    clearScreen();
     g.font = '30px Arial';
     g.fillStyle = 'black';
     
@@ -112,14 +98,12 @@ const startGame = () => {
     if(f) {
         s = [{ x: 320, y: 320 }];
         d = 'up';
-        clearScreen();
         generateFood();
         moveSnake();
     }
 }
 
 const gameOver = () => {
-    clearScreen();
     f = false;
     g.font = '30px Arial';
     g.fillStyle = 'black';
@@ -128,15 +112,14 @@ const gameOver = () => {
     g.fillText(`Press Enter to play again.`, 320, 360);
     setTimeout(() => { 
         if(!f) {
-            clearScreen();
             intro();
         }
     }, 10000);
 }
 
 const checkFoodCollision = () => {
-    return ((food.x - Math.floor( 5 * Math.PI) < s[0].x ) && (food.x + Math.floor( 5 * Math.PI)) > s[0].x) && 
-    ((food.y - Math.floor( 5 * Math.PI) < s[0].y ) && (food.y + Math.floor( 5 * Math.PI)) > s[0].y)
+    return ((food.x - Math.floor( 5 * Math.PI) < s[0].x ) || (food.x + Math.floor( 5 * Math.PI)) > s[0].x) && 
+    ((food.y - Math.floor( 5 * Math.PI) < s[0].y ) || (food.y + Math.floor( 5 * Math.PI)) > s[0].y)
 }
 
 window.addEventListener('keydown', (e) => {

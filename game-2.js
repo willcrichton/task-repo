@@ -25,8 +25,8 @@ const ds = {
     'down': [0, 1]
 }
 var fs; 
-var fsr = 1;
-var fsc = 7;
+var fsRow = 1;
+var fsCol = 7;
 let falling = false;
 let stime, pt;
 let col = 0;
@@ -103,28 +103,28 @@ function removeLines() {
 
 const shapeLanded = () => {
     fs.forEach(pos => {
-        grid.squares[fsr + pos[1]][fsc + pos[0]] = col;
+        grid.squares[fsRow + pos[1]][fsCol + pos[0]] = col;
     });
-    console.log('fsr', fsr);
+
     st = removeLines();
-    if(fsr < 2) {
+    if(fsRow < 2) {
         displayGameOver();
     }
 }
 
 const moveShape = () => {
     if(falling) {
-        fs.forEach(f => new Square(30 * (fsc + f[0]), 30 * (fsr + f[1]), 30).draw(gt, col));
+        fs.forEach(f => new Square(30 * (fsCol + f[0]), 30 * (fsRow + f[1]), 30).draw(gt, col));
         if(checkNoBlockCollision()) {
-            fsc += ds[cd][0];
-            fsr += ds[cd][1];
+            fsCol += ds[cd][0];
+            fsRow += ds[cd][1];
         }
         else {
             shapeLanded();
             fs = getRandomShape();
             col = getRandomColor();
-            fsr = 1;
-            fsc = 5; 
+            fsRow = 1;
+            fsCol = 5; 
         }
     }
 }
@@ -141,16 +141,16 @@ const checkIfRotate = () => {
     });
 
     return pos.every((r) => {
-        let nc = fsc + r[0];
-        let nr = fsr + r[1];
+        let nc = fsCol + r[0];
+        let nr = fsRow + r[1];
         return grid.squares[nr][nc] === -1;
-    })
+    });
 }
 
 const checkNoBlockCollision = () => {
     return fs.every(s => {
-        let c = fsc + ds[cd][0] + s[0];
-        let r = fsr + ds[cd][1] + s[1];
+        let c = fsCol + ds[cd][0] + s[0];
+        let r = fsRow + ds[cd][1] + s[1];
         return grid.squares[r][c] === -1;
     });
 }
@@ -224,7 +224,6 @@ window.addEventListener('keydown', (e) => {
         case 'Enter':
             if(!play) {
                 play = true;
-                gl.incrementTetrisTimesPlayed();
                 sg();
             }
             break;
