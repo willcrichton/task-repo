@@ -8,7 +8,7 @@ c.height = 640;
 let point = 0;
 const g = c.getContext('2d');
 let d = 'up';
-let dx = 10, dy = 10;
+let dx = 20, dy = 20;
 let food = { x: getRandomArbitrary(1, 640), y: getRandomArbitrary(1, 640) };
 let s = [{ x: 320, y: 320 }];
 

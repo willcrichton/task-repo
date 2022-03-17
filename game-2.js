@@ -35,7 +35,8 @@ let grid = new Grid();
 let cd = 'down';
 const nr = 20;
 const nc = 14;
-let st = 0
+let st = 0;
+var elapsed = 0;
 
 const draw = () => {
     gt.clearRect(0, 0, W, H);
@@ -107,7 +108,7 @@ const shapeLanded = () => {
     });
 
     st = removeLines();
-    if(fsRow < 2) {
+    if(fsRow < 0) {
         displayGameOver();
     }
 }
@@ -173,12 +174,12 @@ function animate(t) {
     if(pt === undefined) {
         pt = 0;
     }
-    let elapsed = t - pt;
+    elapsed = t - pt;
     window.requestAnimationFrame(animate);
     if(play) {
         if(elapsed >= 600) {
             clear();
-            cd = 'down';
+            // cd = 'down';
             grid.draw(gt);
             moveShape();
             pt = t;
@@ -194,9 +195,7 @@ const init = () => {
 }
 
 const rotate = () => {
-    if(sh['sq'] === fs) {
-        return;
-    }
+
     fs.forEach(r => {
         let t = r[0];
         r[0] = r[1];
