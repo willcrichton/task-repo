@@ -1,7 +1,7 @@
-For the first 20 minutes of the task, pretend as though
+For the first 15 minutes of the task, pretend as though
 you are reviewing this code. Identify as many issues,
 areas for improvement, confusing aspects, along with whatever you learn
-WITHOUT modifying the code.
+WITHOUT modifying the code's logic.
 
-During the last 25 minutes, use what you learned in the first 20 minutes
+During the last 30 minutes, use what you learned in the first 20 minutes
 to help you attempt to fix the problematic code you identified.
